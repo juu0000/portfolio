@@ -35,7 +35,6 @@ spec:
         type: persistent-claim
         size: 5Gi
         deleteClaim: true
-
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
