@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: github
+  title: Github
+  description: github is a web-based Git repository hosting service.
+  links:
+    - url: https://github.com
+      title: Github Page
+      icon: web
+spec:
+  type: repository
+  lifecycle: production
+  owner: team-devops 
+  system: backstage-portfolio

@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: springboot-app
+  description: springboot-app
+  annotations:
+    backstage.io/managed-by-location: url:https://github.com/
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: springboot-app
+    argocd/app-name: springboot-app
+
+  links:
+    - url: https://github.com/
+      title: GitHub Repo
+      icon: github
+spec:
+  type: service
+  lifecycle: production
+  owner: guest

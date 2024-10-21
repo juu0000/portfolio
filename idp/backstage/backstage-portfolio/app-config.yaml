@@ -17,6 +17,10 @@ backend:
     port: 7007
     # Uncomment the following host directive to bind to specific interfaces
     # host: 127.0.0.1
+
+  reading:
+    allow:
+      - host: 'raw.githubusercontent.com'
   csp:
     connect-src: ["'self'", 'http:', 'https:']
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
@@ -76,14 +80,22 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location, Template, Group]
+    - allow: [Component, System, Resource, Location, Template, Group]
   locations:
-    - type: file
-      target: ../catalog-entities/all.yaml
-    - type: file
-      target: ../catalog-entities/templates.yaml
-    - type: file
-      target: ../catalog-entities/users.yaml
+    # - type: file
+    #   target: ../../../catalog-entities/all.yaml
+    # - type: file
+    #   target: ../../../catalog-entities/templates.yaml
+    # - type: file
+    #   target: ../../../catalog-entities/users.yaml
+    #   rules:
+    #     - allow: [User]
+    - type: url
+      target: https://github.com/juu0000/portfolio/blob/develop/idp/backstage/catalog-entities/all.yaml
+    - type: url
+      target: https://github.com/juu0000/portfolio/blob/develop/idp/backstage/catalog-entities/users.yaml
+      rules:
+        - allow: [User]
 
   # locations:
   #   - type: url
@@ -92,11 +104,6 @@ catalog:
   #     target: https://github.com/backstage-portfolio/blob/main/idp/backstage/catalog-entities/templates.yaml
   #   - type: url
   #     target: https://github.com/backstage-portfolio/blob/main/idp/backstage/catalog-entities/users.yaml
-
-# integrations:
-#   github:
-#     - host: github.com
-#       token: ${GH_TOKEN}
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options

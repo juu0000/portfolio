@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: nodejs-app
+  description: nodejs-app
+  annotations:
+    backstage.io/managed-by-location: url:https://github.com/
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: nodejs-app
+    argocd/app-name: nodejs-app
+
+  links:
+    - url: https://github.com/
+      title: GitHub Repo
+      icon: github
+spec:
+  type: service
+  lifecycle: production
+  owner: team-developer
+  

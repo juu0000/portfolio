@@ -27,6 +27,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import { MyGroupsSidebarItem } from '@backstage/plugin-org';
 import GroupIcon from '@material-ui/icons/People';
+import CategoryIcon from '@material-ui/icons/Category';
+import { useApp } from '@backstage/core-plugin-api';
+import { SidebarSubmenu, SidebarSubmenuItem } from '@backstage/core-components';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -66,7 +69,18 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       <SidebarDivider />
       <SidebarGroup label="Menu" icon={<MenuIcon />}>
         {/* Global nav, not org-specific */}
-        <SidebarItem icon={HomeIcon} to="catalog" text="Home" />
+        {/* <SidebarItem icon={HomeIcon} to="catalog" text="Home" /> */}
+        <SidebarItem icon={HomeIcon} to="/" text="Home" />
+        <SidebarItem icon={CategoryIcon} to="catalog" text="Catalog">
+          <SidebarSubmenu title='Catalog'>
+            <SidebarSubmenuItem title="Components" to="catalog?filters[kind]=component"  icon={useApp().getSystemIcon('kind:component')} />
+            <SidebarSubmenuItem title="Resources" to="catalog?filters[kind]=resource"  icon={useApp().getSystemIcon('kind:resource')} />
+            <SidebarSubmenuItem title="Systems" to="catalog?filters[kind]=system"  icon={useApp().getSystemIcon('kind:system')} />
+            <SidebarSubmenuItem title="Groups" to="catalog?filters[kind]=group"  icon={useApp().getSystemIcon('kind:group')} />
+            <SidebarSubmenuItem title="Users" to="catalog?filters[kind]=user"  icon={useApp().getSystemIcon('kind:user')} />
+            <SidebarSubmenuItem title="Templates" to="catalog?filters[kind]=template"  icon={useApp().getSystemIcon('kind:template')} />
+          </SidebarSubmenu>
+        </SidebarItem>
         <MyGroupsSidebarItem
           singularTitle="My Group"
           pluralTitle="My Groups"

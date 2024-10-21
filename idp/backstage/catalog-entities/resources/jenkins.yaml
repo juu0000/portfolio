@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: jenkins
+  title: Jenkins
+  description: jenkins is an open source automation server.
+  links:
+    - url: https://jenkins.idp.com
+      title: Jenkins Prod
+      icon: web
+spec:
+  type: cicd-tool
+  lifecycle: production
+  owner: team-devops
+  system: backstage-portfolio

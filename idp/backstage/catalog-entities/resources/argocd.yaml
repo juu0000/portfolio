@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: argocd
+  title: Argocd
+  description: argocd is a declarative, GitOps continuous delivery tool for Kubernetes.
+  links:
+    - url: https://argocd.idp.com
+      title: Argocd Prod
+      icon: web
+spec:
+  type: cicd-tool
+  lifecycle: production
+  owner: team-devops
+  system: backstage-portfolio

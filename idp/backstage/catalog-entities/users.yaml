@@ -1,0 +1,23 @@
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-user
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+spec:
+  memberOf: [team-guest]
+  profile:
+    displayName: guest
+    email: guest@gmail.com
+---
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-user
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: daehyun
+spec:
+  memberOf: [team-devops]
+  profile:
+    displayName: daehyun
+    email: daehyun.kim@gmail.com
+---
