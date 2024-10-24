@@ -1,0 +1,50 @@
+$pre_install = <<-EOF
+  echo "### pre install ###"
+  echo "root:vagrant" | sudo chpasswd
+  sudo apt-get clean
+  sudo rm -rf /var/lib/apt/lists/*
+  sudo apt-get update -o Acquire::CompressionTypes::Order::=gz
+  sudo apt-get upgrade -y
+  sudo apt-get update
+EOF
+
+$master_config = <<-EOF
+  echo "### master config ###"
+  sudo apt-get install -y docker.io
+EOF
+
+$worker_config = <<-EOF
+  echo "### worker config ###"
+  sudo apt-get install -y docker.io
+EOF
+
+Vagrant.configure("2") do |config|
+# master node
+  config.vm.define "master" do |master|
+    master.vm.box = "bento/ubuntu-20.04-arm64"
+    master.vm.network "private_network", ip: "192.168.33.100"
+    master.vm.provider "vmware_desktop" do |vmware|
+      # Display the VirtualBox GUI when booting the machine
+      vmware.gui = true
+      vmware.vmx["memsize"] = "6144"
+      vmware.vmx["numvcpus"] = "2"
+    end
+    master.vm.hostname = "master"
+    master.vm.provision "shell", inline: $pre_install
+  end
+
+# worker node
+  (1..2).each do |i|
+    config.vm.define "worker#{i}" do |worker|
+      worker.vm.box = "bento/ubuntu-20.04-arm64"
+      worker.vm.network "private_network", ip: "192.168.33.10#{i}"
+      worker.vm.provider "vmware_desktop" do |vmware|
+        vmware.gui = true
+        vmware.vmx["memsize"] = "4096"
+        vmware.vmx["numvcpus"] = "2"
+      end
+      worker.vm.hostname = "worker#{i}"
+      worker.vm.provision "shell", inline: $pre_install  
+    end
+  end
+end

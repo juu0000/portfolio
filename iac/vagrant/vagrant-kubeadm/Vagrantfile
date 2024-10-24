@@ -1,0 +1,113 @@
+$image_name = "bento/ubuntu-20.04-arm64"
+$master_ip = "192.168.33.100"
+$worker_ip = "192.168.33.10"
+$worker_count = 2
+
+$pre_install = <<-EOF
+  echo "########## >>>>> pre install <<<<<< ##########"
+  echo "root:vagrant" | sudo chpasswd
+  sudo apt-get clean
+  sudo rm -rf /var/lib/apt/lists/*
+  sudo apt-get update -o Acquire::CompressionTypes::Order::=gz
+  sudo apt-get update
+  sudo apt-get upgrade -y
+EOF
+
+$pre_install_kubeadm = <<-EOF
+  sudo echo "192.168.33.100 master" >> /etc/hosts
+  sudo echo "192.168.33.101 worker1" >> /etc/hosts
+  sudo echo "192.168.33.102 worker2" >> /etc/hosts
+  echo "########## >>>>> iptables and ip forwarding Activate <<<<<< ##########"
+  sudo sysctl net.ipv4.ip_forward=1
+  echo "########## >>>>> br_netfilter module load <<<<<< ##########"
+  sudo modprobe br_netfilter
+  echo "########## >>>>> swap memory off <<<<<< ##########"
+  sudo swapoff -a
+
+  echo "########## >>>>> Step containerd <<<<<< ##########"
+  sudo apt-get install ca-certificates curl gnupg -y
+  sudo install -m 0755 -d /etc/apt/keyrings
+  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  sudo chmod a+r /etc/apt/keyrings/docker.gpg
+  sudo echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+  echo "########## >>>>> containerd.io install <<<<<< ##########"
+  sudo apt-get update
+  sudo apt-get install containerd.io -y
+  sudo echo "" > /etc/containerd/config.toml
+  sudo systemctl restart containerd
+
+
+  echo "########## >>>>> Step kubelet kubeadm kubectl <<<<<< ##########"
+  sudo apt-get install -y apt-transport-https
+
+  echo "########## >>>>> kubernetes apt keyring <<<<<< ##########"
+  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | \
+    sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  echo "########## >>>>> kubernetes source list <<<<<< ##########"
+  echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | \
+    sudo tee /etc/apt/sources.list.d/kubernetes.list
+  sudo apt-get update
+  
+  echo "########## >>>>> kubelet, kubeadm, kubectl install <<<<<< ##########"
+  sudo apt-get install -y kubelet kubeadm kubectl
+  sudo apt-mark hold kubelet kubeadm kubectl
+EOF
+
+$master_config = <<-EOF
+  echo "########## >>>>> master config <<<<<< ##########"
+  sudo kubeadm init --apiserver-advertise-address 192.168.33.100 2>&1 | tee /kubeadm/kubeadm_init_output.txt
+  sudo mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  echo "########## >>>>> copy kube config <<<<<< ##########"
+  sudo cp -R $HOME/.kube /kubeadm/
+  echo "########## >>>>> copy join script <<<<<< ##########"
+  tail -n 2 /kubeadm/kubeadm_init_output.txt > join_script.sh
+  sudo chmod +x join_script.sh
+  sudo cp join_script.sh /kubeadm/
+EOF
+
+$worker_config = <<-EOF
+  echo "########## >>>>> worker config <<<<<< ##########"
+  sudo /vagrant/kubeadm/join_script.sh
+EOF
+
+Vagrant.configure("2") do |config|
+# master node
+  config.vm.define "master" do |master|
+    master.vm.box = $image_name
+    master.vm.synced_folder "./kubeadm", "/kubeadm", disabled: false
+    master.vm.network "private_network", ip: $master_ip
+    master.vm.provider "vmware_desktop" do |vmware|
+      # Display the VirtualBox GUI when booting the machine
+      vmware.gui = true
+      vmware.vmx["memsize"] = "6144"
+      vmware.vmx["numvcpus"] = "2"
+    end
+    master.vm.hostname = "master"
+    master.vm.provision "shell", inline: $pre_install
+    master.vm.provision "shell", inline: $pre_install_kubeadm
+    master.vm.provision "shell", inline: $master_config
+  end
+
+# worker node
+  (1..$worker_count).each do |i|
+    config.vm.define "worker#{i}" do |worker|
+      worker.vm.box = $image_name
+      worker.vm.network "private_network", ip: "#{$worker_ip}#{i}"
+      worker.vm.provider "vmware_desktop" do |vmware|
+        vmware.gui = true
+        vmware.vmx["memsize"] = "4096"
+        vmware.vmx["numvcpus"] = "2"
+      end
+      worker.vm.hostname = "worker#{i}"
+      worker.vm.provision "shell", inline: $pre_install
+      worker.vm.provision "shell", inline: $pre_install_kubeadm
+      worker.vm.provision "shell", inline: $worker_config
+    end
+  end
+end
