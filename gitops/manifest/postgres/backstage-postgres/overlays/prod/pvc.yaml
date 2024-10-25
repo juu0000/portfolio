@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-storage-claim
+spec:
+  storageClassName: ebs-gp3
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100G

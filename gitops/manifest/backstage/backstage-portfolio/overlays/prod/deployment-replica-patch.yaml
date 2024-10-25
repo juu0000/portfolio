@@ -1,0 +1,7 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage
+spec:
+  replicas: 1

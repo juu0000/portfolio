@@ -1,0 +1,18 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backstage
+  template:
+    spec:
+      containers:
+        - name: backstage
+          image: docconman/backstage-portfolio
+          ports:
+            - name: http
+              containerPort: 7007

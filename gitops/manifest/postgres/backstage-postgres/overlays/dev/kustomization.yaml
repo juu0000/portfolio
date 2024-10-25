@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namePrefix: dev-
+
+namespace: postgres
+
+resources:
+- ../../base
+- secrets.yaml
+- pvc.yaml
+
+images:
+- name: postgres
+  newTag: "15"
+
+labels:
+- includeSelectors: true
+  pairs:
+    app: postgres
+    backstage.io/kubernetes-id: postgres
+
+patches:
+- path: deployment-storage-patch.yaml
+- path: deployment-env-patch.yaml
+- path: deployment-replica-patch.yaml
+- path: deployment-resource-patch.yaml
+- path: service-patch.yaml

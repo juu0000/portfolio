@@ -1,0 +1,7 @@
+# kubernetes/postgres.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
