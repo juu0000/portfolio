@@ -14,4 +14,4 @@ spec:
   owner: team-devops
   lifecycle: production
   definition:
-    $text: https://raw.githubusercontent.com/juu0000/portfolio/refs/heads/develop/idp/backstage/docs/api-docs/argocd/argocd-swagger.json
+    $text: https://raw.githubusercontent.com/juu0000/portfolio/refs/heads/develop/idp/backstage/api-docs/argocd/argocd-swagger.json

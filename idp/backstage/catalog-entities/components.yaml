@@ -7,3 +7,4 @@ spec:
   targets:
     - ./components/nodejs-app.yaml
     - ./components/springboot-app.yaml
+    - ./components/backstage-portfolio.yaml
