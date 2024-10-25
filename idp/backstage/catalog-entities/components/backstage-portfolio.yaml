@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-portfolio
+  description: 백스테이지는 개발자를 위한 내부 플랫폼 입니다.
+  annotations:
+    backstage.io/managed-by-location: url:https://github.com/ju0000/portfolio/
+    backstage.io/techdocs-ref: url:https://github.com/ju0000/portfolio/blob/develop/idp/backstage/docs/backstage/
+    github.com/project-slug: backstage-portfolio
+    argocd/app-name: backstage-portfolio
+
+  links:
+    - url: https://github.com/ju0000/portfolio/
+      title: GitHub Repo
+      icon: github
+
+spec:
+  type: service
+  lifecycle: production
+  owner: guest
