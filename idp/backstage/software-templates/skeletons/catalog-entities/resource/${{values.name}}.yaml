@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: ${{ values.name }}
+  title: ${{ values.name }}
+  description: ${{ values.description }}
+  links:
+    - url: https://argocd.idp.com
+      title: Argocd Prod
+      icon: web
+spec:
+  type: ${{ values.type }}
+  lifecycle: production
+  owner: ${{ values.owner }}
+  system: ${{ values.system }}

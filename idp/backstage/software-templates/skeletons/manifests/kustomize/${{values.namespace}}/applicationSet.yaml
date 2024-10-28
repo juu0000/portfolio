@@ -1,0 +1,29 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+    name: ${{values.repoName}}
+spec:
+    generators:
+        - list:
+              elements:
+                  - env: prod
+                  - env: dev
+    template:
+        metadata:
+            name: '{{env}}-${{values.repoName}}'
+        spec:
+            project: default
+            source:
+                repoURL: https://github.com/ju0000/portfolio.git
+                targetRevision: HEAD
+                path: gitops/manifest/backstage/${{values.repoName}}/overlays/{{env}}
+            destination:
+                server: https://kubernetes.default.svc
+                namespace: ${{values.namespace}}
+            syncPolicy:
+                automated:
+                    prune: true
+                    selfHeal: true
+                syncOptions:
+                    - CreateNamespace=true

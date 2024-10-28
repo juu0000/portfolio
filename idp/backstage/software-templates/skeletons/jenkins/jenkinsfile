@@ -1,0 +1,9 @@
+@Library('jenkins-shared-library@main')
+
+${{values.appType}}App(
+    app_names: params.APP_NAMES,
+    repo_names: params.REPO_NAMES,
+    git_branch: params.GIT_BRANCH,
+    environment: params.ENVIRONMENT,
+    dockerfile_path: params.DOCKERFILE_PATH,
+)

@@ -1,0 +1,18 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${{values.repoName}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${{values.repoName}}
+  template:
+    spec:
+      containers:
+        - name: ${{values.repoName}}
+          image: ${{values.imageUrl}}
+          ports:
+            - name: http
+              containerPort: ${{values.port}}

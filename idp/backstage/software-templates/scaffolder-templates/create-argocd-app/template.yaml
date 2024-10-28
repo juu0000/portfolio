@@ -1,0 +1,98 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: argocd-app-template
+  title: Create a ArgoCD application
+  description: argocd 애플리케이션을 생성합니다.
+  tags:
+    - recommended
+    - argocd
+spec:
+  owner: team-devops
+  system: lhj-idp
+  type: service
+
+  parameters:
+    - title: 새 argoCD Resource에 대한 정보를 입력해주세요.
+      required:
+        - orgName
+        - repoName
+        - owner
+        - system
+        - namespace
+      properties:
+        orgName:
+          title: Organization Name (또는 GitHub 계정)
+          type: string
+          description: 조직 이름 또는 GitHub 계정 이름을 입력합니다.
+        repoName:
+          title: Repository Name (GitHub 저장소 이름)
+          type: string
+          description: argoCD를 통해 관리할 애플리케이션 소스가 있는 GitHub 저장소 이름을 입력합니다.
+        description:
+          title: Description
+          type: string
+          description: 다른 사람들이 이 컴포넌트가 무엇인지 이해하는데 도움이 되는 설명을 작성합니다.
+        owner:
+          title: Owner
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+                - User
+        system:
+          title: System
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - System
+        namespace:
+          title: Namespace
+          type: string
+          description: 애플리케이션을 배포할 namespace를 입력합니다.
+
+  steps:
+    - id: gitopsTemplate
+      name: GitOps
+      action: fetch:template
+      input:
+        url: ../../skeletons/manifests/kustomize/
+        values:
+          orgName: ${{ parameters.orgName }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }} 
+          description: ${{ parameters.description }}
+          namespace: ${{ parameters.namespace }}
+
+    - id: catalogTemplate
+      name: Generating the Catalog Info Component
+      action: fetch:template
+      input:
+        url: ../../skeletons/catalog-entities/resource/
+        values:
+          name: ${{ parameters.repoName }}
+          type: argocd
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          description: ${{ parameters.description }}
+        targetPath: catalog-entities/resources/
+
+    - id: gitopsPullrequest
+      name: GitOps PullRequest
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=juu0000&repo=portfolio
+        branchName: gitops
+        title: Create GitOps Manifests
+        description: 새로운 애플리케이션을 위한 GitOps 매니페스트를 생성합니다.
+        targetPath: gitops/manifests/
+
+  output:
+    links:
+      - title: Open the GitOps Repository
+        url: ${{ steps.gitopsPullrequest.output.remoteUrl }}

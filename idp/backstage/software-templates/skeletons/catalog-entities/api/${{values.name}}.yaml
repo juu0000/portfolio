@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: argocd-api
+  title: argocd-api
+  description: |
+    Swagger at [https://swagger.io](https://swagger.io).
+  links:
+    - title: argocd API Docs
+      url: https://argo-cd.readthedocs.io/en/latest/developer-guide/api-docs/
+spec:
+  type: openapi
+  system: backstage-portfolio
+  owner: team-devops
+  lifecycle: production
+  definition:
+    $text: https://raw.githubusercontent.com/juu0000/portfolio/refs/heads/develop/idp/backstage/api-docs/argocd/argocd-swagger.json

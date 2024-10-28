@@ -1,0 +1,193 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: nodejs-app-template
+  title: Create a Node.js application with a CI pipeline
+  description: 새로 만든 템플릿
+  tags:
+    - recommended
+    - nodejs
+spec:
+  owner: team-devops
+  system: lhj-idp
+  type: service
+
+  parameters:
+    - title: 새 컴포넌트에 대한 정보를 입력해주세요.
+      required:
+        - orgName
+        - repoName
+        - owner
+        - system
+        - port
+      properties:
+        orgName:
+          title: Organization Name (또는 GitHub 계정)
+          type: string
+        repoName:
+          title: Repository Name (GitHub 저장소 이름)
+          type: string
+        description:
+          title: Description
+          type: string
+          description: 다른 사람들이 이 컴포넌트가 무엇인지 이해하는데 도움이 되는 설명을 작성합니다.
+        owner:
+          title: Owner
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - Group
+                - User
+        system:
+          title: System
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - System
+        port:
+          title: Port
+          type: number
+          default: 8080
+          description: 앱에 대한 포트를 재정의합니다.
+    - title: CI 방법에 대한 정보를 입력해주세요.
+      required:
+        - ci
+      properties:
+        ci:
+          title: Select a CI method
+          type: string
+          description: This action will create a CI pipeline for your application based on chosen method
+          default: ../../skeletons/github-actions/
+          enum:
+            - ../../skeletons/github-actions/
+            - ../../skeletons/jenkins/
+          enumNames:
+            - GitHub Action
+            - Jenkins
+      dependencies:
+        ci:
+          oneOf:
+            - properties:
+                # Show no extra properties when GitHub Actions is selected
+                ci:
+                  const: ../../skeletons/github-actions/
+            - required:
+                - appType
+              properties:
+                ci:
+                  const: ../../skeletons/jenkins/
+                appType:
+                  enum:
+                    - nodejsApp
+                  enumNames:
+                    - Node.js
+
+  steps:
+    - id: sourceCodeTemplate
+      name: Generating the Source Code Component
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          orgName: ${{ parameters.orgName }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          description: ${{ parameters.description }}
+          imageUrl: ${{ parameters.imageUrl }}
+          port: ${{ parameters.port }}
+          ci: ${{ parameters.ci }}
+          groupId: ${{ parameters.groupId }}
+          artifactId: ${{ parameters.artifactId }}
+          javaPackageName: ${{ parameters.javaPackageName }}
+
+    - id: ciTemplate
+      name: Generating the CI Component
+      action: fetch:template
+      input:
+        url: ${{ parameters.ci }}
+        copyWithoutTemplating:
+          - .github/workflows/
+        values:
+          appType: ${{ parameters.appType }}
+          orgName: ${{ parameters.orgName }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          description: ${{ parameters.description }}
+          imageUrl: ${{ parameters.imageUrl }}
+          port: ${{ parameters.port }}
+          ci: ${{ parameters.ci }}
+
+    - id: catalogTemplate
+      name: Generating the Catalog Info Component
+      action: fetch:template
+      input:
+        url: ../../skeletons/catalog-info/
+        values:
+          orgName: ${{ parameters.orgName }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          catalogType: api
+          description: ${{ parameters.description }}
+          imageUrl: ${{ parameters.imageUrl }}
+          port: ${{ parameters.port }}
+          ci: ${{ parameters.ci }}
+
+    - id: publish
+      name: Publishing to the Source Code Repository
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: ${{ parameters.description }}
+        repoUrl: github.com?owner=${{ parameters.orgName }}&repo=${{ parameters.repoName }}
+        defaultBranch: main
+
+    - id: register
+      name: Registering the Catalog Info Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+    - id: gitopsTemplate
+      name: GitOps
+      action: fetch:template
+      input:
+        url: ../../skeletons/manifests/
+        values:
+          orgName: ${{ parameters.orgName }}
+          repoName: ${{ parameters.repoName }}
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }} 
+          description: ${{ parameters.description }}
+          imageUrl: ${{ parameters.imageUrl }}
+          port: ${{ parameters.port }}
+          ci: ${{ parameters.ci }}
+          namespace: app
+
+    - id: gitopsPullrequest
+      name: GitOps PullRequest
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=juu0000&repo=portfolio
+        branchName: gitops
+        title: Create GitOps Manifests
+        description: 새로운 앱을 위한 GitOps 매니페스트를 생성합니다.
+        sourcePath: kustomize/
+        targetPath: gitops/manifests/
+
+  output:
+    links:
+      - title: Open the Source Code Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open the Catalog Info Component
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
+      - title: Open the GitOps Manifests
+        url: ${{ steps.gitopsPullrequest.output.remoteUrl }}

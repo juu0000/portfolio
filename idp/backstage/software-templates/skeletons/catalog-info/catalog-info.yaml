@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.repoName }}
+  title: ${{ values.repoName }}
+  description: ${{ values.description }}
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: ${{ values.orgName }}/${{ values.repoName }}
+    argocd/name: ${{ values.repoName }}
+spec:
+  system: ${{ values.system }}
+  type: ${{ values.catalogType }}
+  lifecycle: production
+  owner: ${{ values.owner }}
