@@ -1,0 +1,29 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+    name: tesst
+spec:
+    generators:
+        - list:
+              elements:
+                  - env: prod
+                  - env: dev
+    template:
+        metadata:
+            name: '{{env}}-tesst'
+        spec:
+            project: default
+            source:
+                repoURL: https://github.com/ju0000/portfolio.git
+                targetRevision: HEAD
+                path: gitops/manifest/backstage/tesst/overlays/{{env}}
+            destination:
+                server: https://kubernetes.default.svc
+                namespace: app
+            syncPolicy:
+                automated:
+                    prune: true
+                    selfHeal: true
+                syncOptions:
+                    - CreateNamespace=true

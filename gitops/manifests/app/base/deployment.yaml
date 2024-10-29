@@ -1,0 +1,18 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesst
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tesst
+  template:
+    spec:
+      containers:
+        - name: tesst
+          image: 
+          ports:
+            - name: http
+              containerPort: 8080

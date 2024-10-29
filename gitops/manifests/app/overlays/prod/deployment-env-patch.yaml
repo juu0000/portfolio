@@ -1,0 +1,18 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesst
+spec:
+  template:
+    spec:
+      containers:
+        - name: tesst
+          envFrom:
+            - secretRef:
+                name: tesst-secrets
+            - secretRef:
+                name: tesst-secrets
+            - configMapRef:
+                name: tesst-configmap
+      serviceAccountName: tesst
