@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: test
+  title: test
+  description: asdf
+  links:
+    - url: https://argocd.idp.com
+      title: Argocd Prod
+      icon: web
+spec:
+  type: argocd
+  lifecycle: production
+  owner: group:default/team-developer
+  system: system:default/backstage-portfolio

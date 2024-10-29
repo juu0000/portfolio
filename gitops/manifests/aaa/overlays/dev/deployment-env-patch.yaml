@@ -1,0 +1,18 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test
+spec:
+  template:
+    spec:
+      containers:
+        - name: test
+          envFrom:
+            - secretRef:
+                name: test-secrets
+            - secretRef:
+                name: test-secrets
+            - configMapRef:
+                name: test-configmap
+      serviceAccountName: test
