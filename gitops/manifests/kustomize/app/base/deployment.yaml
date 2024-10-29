@@ -1,0 +1,18 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tesat
+  template:
+    spec:
+      containers:
+        - name: tesat
+          image: asdfasdf
+          ports:
+            - name: http
+              containerPort: 8080

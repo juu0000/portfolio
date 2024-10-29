@@ -1,0 +1,18 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesat
+spec:
+  template:
+    spec:
+      containers:
+        - name: tesat
+          envFrom:
+            - secretRef:
+                name: tesat-secrets
+            - secretRef:
+                name: tesat-secrets
+            - configMapRef:
+                name: tesat-configmap
+      serviceAccountName: tesat

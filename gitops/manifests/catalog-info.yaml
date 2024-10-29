@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tesat
+  title: tesat
+  description: sdfasdf
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: juu0000/tesat
+    argocd/name: tesat
+spec:
+  system: system:default/backstage-portfolio
+  type: api
+  lifecycle: production
+  owner: group:default/team-developer

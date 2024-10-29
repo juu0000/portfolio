@@ -1,0 +1,25 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesat
+spec:
+  template:
+    spec:
+      containers:
+        - name: tesat
+          # resources:
+          #   requests:
+          #     cpu: "100m"
+          #     memory: "128Mi"
+          #   limits:
+          #     cpu: "500m"
+          #     memory: "256Mi"
+          # readinessProbe:
+          #   httpGet:
+          #     port: 7007
+          #     path: /healthcheck
+          # livenessProbe:
+          #   httpGet:
+          #     port: 7007
+          #     path: /healthcheck

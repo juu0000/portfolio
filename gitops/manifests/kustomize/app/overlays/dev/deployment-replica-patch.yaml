@@ -1,0 +1,7 @@
+# kubernetes/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesat
+spec:
+  replicas: 1
