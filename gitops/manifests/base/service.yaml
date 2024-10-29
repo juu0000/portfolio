@@ -1,0 +1,13 @@
+# kubernetes/backstage-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: teste
+spec:
+  selector:
+    app: teste
+  ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 8080
