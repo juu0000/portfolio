@@ -4,3 +4,10 @@
 .DS_Store
 .kube
 /iac/vagrant/vagrant-kubeadm/kubeadm
+
+.env.local
+.env
+
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
