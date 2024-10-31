@@ -8,6 +8,8 @@
 
 import { createBackend } from '@backstage/backend-defaults';
 
+import { createBackendModule } from '@backstage/backend-plugin-api';
+
 const backend = createBackend();
 
 backend.add(import('@backstage/plugin-app-backend/alpha'));
@@ -53,5 +55,8 @@ backend.add(import('@backstage/plugin-kubernetes-backend/alpha'));
 
 // scaffolder
 backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
+
+// scaffolder action utils
+backend.add(import('@roadiehq/scaffolder-backend-module-utils/new-backend'));
 
 backend.start();

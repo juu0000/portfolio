@@ -109,6 +109,8 @@ catalog:
       target: https://github.com/juu0000/portfolio/blob/develop/idp/backstage/catalog-entities/users.yaml
       rules:
         - allow: [User]
+    - type: url
+      target: https://github.com/juu0000/portfolio/blob/develop/idp/backstage/software-templates/templates.yaml
 
 kubernetes:
   # see https://backstage.io/docs/features/kubernetes/configuration for kubernetes configuration options
