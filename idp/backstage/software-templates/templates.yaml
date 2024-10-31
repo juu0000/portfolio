@@ -9,3 +9,4 @@ spec:
     - ./scaffolder-templates/create-nodejs-app/template.yaml
     - ./scaffolder-templates/create-argocd-app/template.yaml
     - ./scaffolder-templates/create-aws-s3/template.yaml
+    - ./scaffolder-templates/create-aws-ec2/template.yaml
