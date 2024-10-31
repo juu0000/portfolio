@@ -6,4 +6,6 @@ metadata:
 spec:
   targets:
     - ./scaffolder-templates/create-springboot-app/template.yaml
+    - ./scaffolder-templates/create-nodejs-app/template.yaml
     - ./scaffolder-templates/create-argocd-app/template.yaml
+    - ./scaffolder-templates/create-aws-s3/template.yaml

@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: spring-boot-app-template
   title: Create a Spring Boot application with a CI pipeline
-  description: 새로 만든 템플릿
+  description: 신규 Spring Boot 애플리케이션 개발환경을 생성해주는 템플릿 입니다. ci 생성, github repository 생성, gitops 생성 작업을 수행합니다.
   tags:
     - recommended
     - spring-boot

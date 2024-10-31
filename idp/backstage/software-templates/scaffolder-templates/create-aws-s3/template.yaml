@@ -1,0 +1,100 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: aws-s3-template
+  title: Create a AWS S3
+  description: AWS S3 버킷을 생성해주는 템플릿 입니다.
+  tags:
+    - aws
+    - s3
+spec:
+  owner: team-devops
+  system: lhj-idp
+  type: aws
+
+  parameters:
+    - title: 새 argoCD Resource에 대한 정보를 입력해주세요.
+      required:
+        - s3Name
+        - acl
+        - tags
+      properties:
+        s3Name:
+          title: S3 Name
+          type: string
+          description: S3 버킷 이름을 입력합니다.
+        acl:
+          title: S3 ACL
+          type: array
+          description: S3 버킷 접근 제어 권한을 입력합니다.
+          items:
+            type: string
+            enum:
+              - private
+              - public-read
+              - public-read-write
+              - aws-exec-read
+              - authenticated-read
+        inputObject:
+          title: Tags
+          type: object
+          description: S3 버킷 태그를 입력합니다.
+          properties:
+            first:
+              type: string
+              title: Owner
+              backstage:featureFlag: nested-experimental-feature
+            second:
+              type: number
+              title: second
+
+
+  steps:
+    - id: fetch-vars
+      name: Fetch S3 terraform variables
+      action: fetch:plain
+      input:
+        url: https://github.com/juu0000/portfolio/blob/develop/iac/terraform/s3/env
+        targetPath: ./output/env
+
+    - id: merge-vars
+      name: Merge S3 terraform variables
+      action: roadiehq:utils:yaml:merge
+      input:
+        path: ./output/env/dev.yaml
+        mergeArrays: true
+        content:
+          buckets:
+            - name: ${{ parameters.s3Name }}
+              acl: ${{ parameters.acl }}
+              tags:
+                Owner: ${{ parameters.inputObject.first }}
+
+
+    - id: catalogTemplate
+      name: Generating the Catalog Info Component
+      action: fetch:template
+      input:
+        url: ../../skeletons/catalog-entities/resource/
+        values:
+          name: ${{ parameters.s3Name }}
+          type: s3
+          owner: ${{ parameters.owner }}
+          system: ${{ parameters.system }}
+          description: ${{ parameters.description }}
+        targetPath: catalog-entities/resources/
+
+    - id: gitopsPullrequest
+      name: GitOps PullRequest
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=juu0000&repo=portfolio
+        branchName: infra
+        title: Create GitOps Manifests
+        description: 새로운 S3 버킷을 위한 Terraform 코드를 생성합니다.
+        targetPath: iac/terraform/s3/
+
+  output:
+    links:
+      - title: Open the GitOps Repository
+        url: ${{ steps.gitopsPullrequest.output.remoteUrl }}
