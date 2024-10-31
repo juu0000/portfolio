@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: test
+  title: test
+  description: aassdasdf
+  links:
+    - url: https://argocd.idp.com
+      title: Argocd Prod
+      icon: web
+spec:
+  type: ec2
+  lifecycle: production
+  owner: user:default/daehyun
+  system: aws-ec2
