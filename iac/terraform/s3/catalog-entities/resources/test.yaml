@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: test
+  title: test
+  description: asetset
+  links:
+    - url: https://argocd.idp.com
+      title: Argocd Prod
+      icon: web
+spec:
+  type: s3
+  lifecycle: production
+  owner: user:default/guest
+  system: aws-s3

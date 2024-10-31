@@ -1,0 +1,13 @@
+buckets:
+  - name: example-dev-bucket-1
+    acl: private
+    tags:
+      Owner: Alice
+  - name: example-dev-bucket-2
+    acl: private
+    tags:
+      Owner: Bob
+  - name: test
+    acl: public-read
+    tags:
+      Owner: user:default/guest
