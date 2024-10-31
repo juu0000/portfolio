@@ -3,7 +3,10 @@ kind: Template
 metadata:
   name: argocd-app-template
   title: Create a ArgoCD application
-  description: argocd 애플리케이션과 kubernetes 매니페스트를 gitops Repository에 생성해주는 템플릿 입니다. gitops repository에 pull request를 생성합니다.
+  description: |
+    argocd 애플리케이션과 kubernetes 매니페스트를 gitops Repository에 생성해주는 템플릿 입니다.
+    
+    gitops repository에 pull request를 생성합니다.
   tags:
     - recommended
     - argocd

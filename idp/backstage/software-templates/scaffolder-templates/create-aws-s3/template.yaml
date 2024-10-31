@@ -13,7 +13,7 @@ spec:
   type: aws
 
   parameters:
-    - title: 새 argoCD Resource에 대한 정보를 입력해주세요.
+    - title: 새 AWS S3에 대한 정보를 입력해주세요.
       required:
         - s3Name
         - acl
@@ -23,31 +23,41 @@ spec:
           title: S3 Name
           type: string
           description: S3 버킷 이름을 입력합니다.
+        description:
+          title: Description
+          type: string
+          description: S3 버킷 설명을 입력합니다.
         acl:
           title: S3 ACL
-          type: array
+          type: string
           description: S3 버킷 접근 제어 권한을 입력합니다.
+          enum:
+            - private
+            - public-read
+            - public-read-write
+            - aws-exec-read
+            - authenticated-read
+        tags:
+          title: Owner
+          type: string
+          ui:field: EntityPicker
+          ui:options:
+            catalogFilter:
+              kind:
+                - User
+        environment:
+          title: Environment
+          description: 생성할 환경을 선택합니다.
+          type: array
+          default: dev
+          minItems: 1
           items:
             type: string
             enum:
-              - private
-              - public-read
-              - public-read-write
-              - aws-exec-read
-              - authenticated-read
-        inputObject:
-          title: Tags
-          type: object
-          description: S3 버킷 태그를 입력합니다.
-          properties:
-            first:
-              type: string
-              title: Owner
-              backstage:featureFlag: nested-experimental-feature
-            second:
-              type: number
-              title: second
-
+              - dev
+              - prod
+          uniqueItems: true
+          ui:widget: checkboxes
 
   steps:
     - id: fetch-vars
@@ -55,21 +65,39 @@ spec:
       action: fetch:plain
       input:
         url: https://github.com/juu0000/portfolio/blob/develop/iac/terraform/s3/env
-        targetPath: ./output/env
+        targetPath: iac/terraform/s3/env
 
     - id: merge-vars
       name: Merge S3 terraform variables
-      action: roadiehq:utils:yaml:merge
+      if: ${{ parameters.environment.includes('dev') }}
+      action: roadiehq:utils:merge
+      options:
+        mergeArrays: true
       input:
-        path: ./output/env/dev.yaml
+        path: iac/terraform/s3/env/dev.yaml
         mergeArrays: true
         content:
           buckets:
             - name: ${{ parameters.s3Name }}
               acl: ${{ parameters.acl }}
               tags:
-                Owner: ${{ parameters.inputObject.first }}
+                Owner: ${{ parameters.tags }}
 
+    - id: merge-vars-prod
+      name: Merge S3 terraform variables
+      if: ${{ parameters.environment.includes('prod') }}
+      action: roadiehq:utils:merge
+      options:
+        mergeArrays: true
+      input:
+        path: iac/terraform/s3/env/prod.yaml
+        mergeArrays: true
+        content:
+          buckets:
+            - name: ${{ parameters.s3Name }}
+              acl: ${{ parameters.acl }}
+              tags:
+                Owner: ${{ parameters.tags }}
 
     - id: catalogTemplate
       name: Generating the Catalog Info Component
@@ -79,8 +107,8 @@ spec:
         values:
           name: ${{ parameters.s3Name }}
           type: s3
-          owner: ${{ parameters.owner }}
-          system: ${{ parameters.system }}
+          owner: ${{ parameters.tags }}
+          system: aws-s3
           description: ${{ parameters.description }}
         targetPath: catalog-entities/resources/
 
@@ -90,9 +118,8 @@ spec:
       input:
         repoUrl: github.com?owner=juu0000&repo=portfolio
         branchName: infra
-        title: Create GitOps Manifests
+        title: Create Terraform files
         description: 새로운 S3 버킷을 위한 Terraform 코드를 생성합니다.
-        targetPath: iac/terraform/s3/
 
   output:
     links:

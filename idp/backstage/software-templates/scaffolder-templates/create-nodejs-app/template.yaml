@@ -3,7 +3,10 @@ kind: Template
 metadata:
   name: nodejs-app-template
   title: Create a Node.js application with a CI pipeline
-  description: 신규 Node.js 애플리케이션 개발환경을 생성해주는 템플릿 입니다. ci 생성, github repository 생성, gitops 생성 작업을 수행합니다.
+  description: |
+    신규 Node.js 애플리케이션 개발환경을 생성해주는 템플릿 입니다.
+
+    ci 생성, github repository 생성, gitops 생성 작업을 수행합니다.
   tags:
     - recommended
     - nodejs
