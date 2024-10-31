@@ -1,0 +1,9 @@
+buckets:
+  - name: "example-prod-bucket-1"
+    acl: "private"
+    tags:
+      Owner: "Alice"
+  - name: "example-prod-bucket-2"
+    acl: "private"
+    tags:
+      Owner: "Bob"
