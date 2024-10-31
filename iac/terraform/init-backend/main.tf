@@ -27,13 +27,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "state-encryption"
 
 resource "aws_dynamodb_table" "terraform-locks" {
   hash_key     = "LockID"
-  name         = "terraform-test-locks"
+  name         = "terraform-portfolio-locks"
   billing_mode = "PAY_PER_REQUEST"
   attribute {
     name = "LockID"
     type = "S"
   }
   tags = {
-    "Environment" = "test"
+    "Environment" = "portfolio"
   }
 }

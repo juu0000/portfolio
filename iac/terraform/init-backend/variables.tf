@@ -1,6 +1,6 @@
 variable "bucket-name" {
   type = string
-  default = "terraform-state"
+  default = "terraform-state-lhj-portfolio"
 }
 
 variable "available-zone" {
