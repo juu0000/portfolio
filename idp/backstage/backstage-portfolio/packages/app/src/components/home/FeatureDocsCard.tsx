@@ -6,7 +6,7 @@ export const HomeFeaturedDocsCard = () => {
         <FeaturedDocsCard title="백스테이지를 소개합니다."
           filter={{
               'spec.type': 'service',
-              'metadata.name': 'backstage',
+              'metadata.name': 'backstage-portfolio',
           }}
         />
     );

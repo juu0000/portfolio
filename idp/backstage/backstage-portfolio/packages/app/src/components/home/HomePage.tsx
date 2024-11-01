@@ -112,7 +112,6 @@ export const HomePage = () => {
             gridProps: { xs: 12, md: 4 },
             props: {
                 title: "최근에 찾은 항목",
-                kind: ['Component','API'],
             },
         },
         {
@@ -120,8 +119,6 @@ export const HomePage = () => {
             gridProps: { xs: 12, md: 4 },
             props: {
                 title: "가장 많이 찾은 항목",
-                kind: ['Component','API'],
-
             },
         },
     ];

@@ -2,9 +2,13 @@
 
 백스테이지의 카탈로그는 개발자들이 개발에 필요한 모든 요소들을 추적, 관리할 수 있도록 돕고 있습니다.
 
+Catalog 탭에서는 백스테이지 포털에서 구성된 여러 요소들을 확인할 수 있습니다.
+
 카탈로그 단위는 컴포넌트(Component), 시스템(System), API(API), 리소스(Resource), 위치(Location) 등이 있습니다.
 
 각 단위에 대한 설명은 다음과 같습니다.
+
+> 이미지는 확대해서 보시면 더 자세한 정보를 확인할 수 있습니다. (이미지를 클릭하면 확대 됩니다.)
 
 ## 컴포넌트(Component)
 ---
@@ -13,7 +17,7 @@
 
 컴포넌트는 개발 단위에 해당하는 요소들을 통합, 추적, 관리할 수 있도록 돕고 있습니다.
 
-**backstage-portfolio** 프로젝트, **springboot-app** 등을 컴포넌트로 관리할 수 있도록 구성하고 있습니다.
+머스트잇에서는 **athena 프로젝트**, **cronjob** 등을 컴포넌트로 관리할 수 있도록 구성하고 있습니다.
 
 ### Overview
 * 컴포넌트 오버뷰(Overview) 화면
@@ -53,16 +57,19 @@ Kubernetes 탭에서는 해당 컴포넌트에 대한 Kubernetes 정보를 확�
 ![component-09](./images/components/component-09.jpg)
 
 API 탭에서는 해당 컴포넌트에 대한 API 정보를 확인할 수 있습니다.
-Provided API는 컴포넌트에서 제공하는 API 정보를 확인할 수 있습니다.
-Consumed API는 컴포넌트에서 사용하는 API 정보를 확인할 수 있습니다.
+Provided API는 컴포넌트에서 **제공**하는 API 정보를 확인할 수 있습니다.
+
+Consumed API는 컴포넌트에서 **사용**하는 API 정보를 확인할 수 있습니다.
 아직 구현되지 않은 기능이므로 추후 업데이트 예정입니다.
 
-### Docs
+## Docs
+---
 * 컴포넌트 Docs 화면
 ![component-10](./images/components/component-10.jpg)
 
 Docs 탭에서는 해당 컴포넌트에 대한 문서 정보를 확인할 수 있습니다.
 문서 정보의 경우 md 파일을 통해서 각 컴포넌트를 관리하는 개발자가 관련한 기술 내용을 작성해 나갈 수 있도록 구현된 기능입니다.
+
 지정된 Repository 에서 지속적으로 문서를 관리해 나갈 수 있습니다.
 하지만 내부적인 문서 관리 방법에 대한 정책이 없는 상황이므로 해당 기능을 사용하고자 한다면 적극 도입 예정 입니다.
 
@@ -70,5 +77,28 @@ Docs 탭에서는 해당 컴포넌트에 대한 문서 정보를 확인할 수 �
 ---
 * 시스템 목록 화면
 ![system-01](./images/systems/system-01.jpg)
+* 시스템 오버뷰 화면
+![system-02](./images/systems/system-02.jpg)
 
 시스템은 개발 단위에 해당하는 요소들을 통합, 추적, 관리할 수 있도록 돕고 있습니다.
+같은 개발 단위에 있는 항목들을 볼 수 있습니다.
+
+## 리소스(Resource)
+---
+* 리소스 목록 화면
+![resource-01](./images/resources/resource-01.jpg)
+* 리소스 오버뷰 화면
+![resource-02](./images/resources/resource-02.jpg)
+
+리소스는 개발에서 사용하는 외부 서비스들을 통합, 추적, 관리할 수 있도록 돕고 있습니다.
+주로 Database, S3, Secret Manager 등을 리소스로 관리하고 있습니다.
+
+## 그룹(Group)
+---
+* 그룹 목록 화면
+![group-01](./images/groups/group-01.jpg)
+* 그룹 오버뷰 화면
+![group-02](./images/groups/group-02.jpg)
+
+그룹은 백스테이지에서 관리하는 최상위 단위입니다.
+그룹 오버뷰 화면에서 그룹의 멤버, 관리하는 컴포넌트 및 시스템 목록을 확인할 수 있습니다.
