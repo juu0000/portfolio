@@ -41,13 +41,13 @@ Vagrantfile은 Vagrant 환경을 설정하는 데 필요한 모든 구성을 포
 # Start of Selection
 1. Vagrant와 VMware를 설치합니다.
 2. 터미널에서 `iac/vagrant/scripts/` 디렉토리로 이동합니다.
-3. 다음 명령어를 실행하여 Vagrant로 Kubernetes 환경 구성을 시작합니다:
+3. 다음 명령어를 실행하여 Vagrant로 Kubernetes 환경 구성을 시작합니다.
 
    ```bash
    ./vagrant-kubeadm.sh
    ```
 
-4. master 노드에 접속합니다.
+4. master 노드에 접속하여 아래 명령어를 수행합니다.
 
    ```bash
    vagrant ssh master
