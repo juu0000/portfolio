@@ -1,0 +1,21 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: efk-topic
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster-kraft
+spec:
+  # 파티션 수
+  partitions: 3
+  # 복제본 수
+  replicas: 3
+  config:
+    # 메시지 보존 시간 (7일)
+    retention.ms: 604800000
+    # 세그먼트 크기 (1GB)
+    segment.bytes: 1073741824
+    # 최소 동기화 복제본 수 (2개)
+    min.insync.replicas: 2
+    # 메시지 삭제 + 압축(중복된 키 삭제)
+    cleanup.policy: delete

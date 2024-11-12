@@ -1,0 +1,85 @@
+test:
+  ./test.sh
+duration: 2h
+environment:
+  DOCKER_ORG: "strimzi"
+  DOCKER_TAG: "test"
+  TEST_LOG_DIR: "systemtest/target/logs"
+  TESTS: ""
+  TEST_GROUPS: ""
+  EXCLUDED_TEST_GROUPS: "loadbalancer"
+  CLUSTER_OPERATOR_INSTALL_TYPE: bundle
+  PARALLELISM_ENABLED: true
+  PARALLEL_TEST_COUNT: 2
+  RERUN_FAILED_TEST_COUNT: 2
+  # All tests on TF will use KRaft mode because ZK is not working reliably on it's infra
+  STRIMZI_USE_KRAFT_IN_TESTS: "true"
+adjust:
+  - environment+:
+      EXCLUDED_TEST_GROUPS: "loadbalancer"
+    when: arch == aarch64, arm64
+
+/smoke:
+  summary: Run smoke strimzi test suite
+  duration: 40m
+  tier: 1
+  environment+:
+    TEST_PROFILE: smoke
+
+/upgrade:
+  summary: Run upgrade strimzi test suite
+  duration: 5h
+  tier: 2
+  environment+:
+    TEST_PROFILE: kraft_upgrade
+
+/regression-operators:
+  summary: Run regression strimzi test suite
+  duration: 10h
+  tier: 2
+  environment+:
+    TEST_PROFILE: operators
+
+/regression-brokers-and-security:
+  summary: Run regression strimzi test suite
+  duration: 12h
+  tier: 2
+  environment+:
+    TEST_PROFILE: brokers-and-security
+
+/regression-operands:
+  summary: Run regression strimzi test suite
+  duration: 12h
+  tier: 2
+  environment+:
+    TEST_PROFILE: operands
+
+/acceptance:
+  summary: Run acceptance strimzi test suite
+  duration: 5h
+  tier: 2
+  environment+:
+    TEST_PROFILE: acceptance
+
+/sanity:
+  summary: Run sanity strimzi test suite
+  duration: 5h
+  tier: 2
+  environment+:
+    TEST_PROFILE: sanity
+
+/performance:
+  summary: Run performance strimzi test suite
+  duration: 2h
+  tier: 1
+  environment+:
+    TEST_PROFILE: performance
+    PARALLELISM_ENABLED: false
+
+/capacity:
+  summary: Run performance capacity strimzi test suite
+  duration: 12h
+  tier: 1
+  environment+:
+    TEST_PROFILE: capacity
+    PARALLELISM_ENABLED: false
