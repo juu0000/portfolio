@@ -1,0 +1,43 @@
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  defaultStorageClass: ""
+  storageClass: ""
+  elasticsearch:
+    service:
+      name: elasticsearch
+      ports:
+        restAPI: 9200
+  kibanaEnabled: true
+
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "2Gi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+
+master:
+  masterOnly: true
+  replicaCount: 2
+  resources: {}
+  nodeSelector: {}
+
+data:
+  replicaCount: 2
+  resources: {}
+  nodeSelector: {}
+
+coordinating:
+  replicaCount: 2
+  resources: {}
+  nodeSelector: {}
+
+ingest:
+  replicaCount: 2
+  resources: {}
+  nodeSelector: {}
+
+metrics:
+  enabled: true
