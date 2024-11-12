@@ -1,0 +1,16 @@
+name: Build and Deploy Kafka Plugin
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'idp/backstage/**'
+  workflow_dispatch:
+
+jobs:
+  call_workflow:
+    uses: ./cicd/github-action/build-images.yaml
+    with:
+      dockerfile_path: 'idp/backstage'
+      image_name: 'backstage-portpolio'

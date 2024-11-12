@@ -1,0 +1,16 @@
+name: Build and Deploy Kafka Plugin
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'ops-tools/helm/kafka/kafka-crd/plugin/**'
+  workflow_dispatch:
+
+jobs:
+  call_workflow:
+    uses: ./cicd/github-action/build-images.yaml
+    with:
+      dockerfile_path: 'ops-tools/helm/kafka/kafka-crd/plugin'
+      image_name: 'kafka-connector-3.8.0'
