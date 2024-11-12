@@ -7,10 +7,17 @@ on:
     paths:
       - 'ops-tools/helm/kafka/kafka-crd/plugin/**'
   workflow_dispatch:
+    inputs:
+      image_type:
+        required: true
+        type: string
+        default: 'kafka-connector'
 
 jobs:
   call_workflow:
-    uses: ./cicd/github-action/build-images.yaml
+    uses: ./.github/workflows/re-build-images.yaml
     with:
-      dockerfile_path: 'ops-tools/helm/kafka/kafka-crd/plugin'
+      dockerfile_path: 'ops-tools/helm/kafka/kafka-crd/connector/Dockerfile'
+      image_type: '${{ inputs.image_type }}'
       image_name: 'kafka-connector-3.8.0'
+    secrets: inherit
