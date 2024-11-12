@@ -5,9 +5,13 @@
 .kube
 /iac/vagrant/vagrant-kubeadm/kubeadm
 
+# local env
 .env.local
 .env
 
+# terraform
 terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
+
+# ops-tools
