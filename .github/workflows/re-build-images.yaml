@@ -1,0 +1,74 @@
+name: Build Images
+
+on:
+  workflow_call:
+    inputs:
+      dockerfile_path:
+        description: 'The path to the Dockerfile'
+        required: true
+        type: string
+        default: '.'
+      image_name:
+        description: 'The name of the image'
+        required: true
+        type: string
+      image_type:
+        description: 'The type of the image'
+        required: true
+        type: string
+        default: ''
+        
+jobs:
+  image_type_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Image Type
+        run: |
+          if [ "${{ inputs.image_type }}" != "springboot" ] && [ "${{ inputs.image_type }}" != "kafka-connector" ] && [ "${{ inputs.image_type }}" != "backstage" ] && [ "${{ inputs.image_type }}" != "nodejs" ]; then
+            echo "Invalid image type"
+            exit 1
+          fi
+          echo "${{ inputs.image_type }} confirmed"
+
+  build_image_kafka_connector:
+    runs-on: ubuntu-latest
+    if: inputs.image_type == 'kafka-connector'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Image
+        run: |
+          docker build -f ${{ inputs.dockerfile_path }} -t docconman/${{ inputs.image_name }}:latest ./ops-tools/helm/kafka/kafka-crd/connector
+          docker push docconman/${{ inputs.image_name }}:latest
+
+  build_image_backstage:
+    runs-on: ubuntu-latest
+    if: inputs.image_type == 'backstage'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Backend
+        run: |
+          cd ./idp/backstage/backstage-portfolio
+          yarn install
+          yarn tsc
+          yarn build:backend
+
+      - name: Build Image
+        run: |
+          docker build -f ${{ inputs.dockerfile_path }} -t docconman/${{ inputs.image_name }}:latest ./idp/backstage/backstage-portfolio
+          docker push docconman/${{ inputs.image_name }}:latest

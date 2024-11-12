@@ -1,16 +1,23 @@
-name: Build and Deploy Kafka Plugin
+name: Build and Deploy Backstage
 
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - 'idp/backstage/**'
+  # push:
+  #   branches:
+  #     - develop
+  #   paths:
+  #     - 'idp/backstage/**'
   workflow_dispatch:
+    inputs:
+      image_type:
+        required: true
+        type: string
+        default: 'backstage'
 
 jobs:
   call_workflow:
-    uses: ./cicd/github-action/build-images.yaml
+    uses: ./.github/workflows/re-build-images.yaml
     with:
-      dockerfile_path: 'idp/backstage'
-      image_name: 'backstage-portpolio'
+      dockerfile_path: 'idp/backstage/backstage-portfolio/Dockerfile'
+      image_type: '${{ inputs.image_type }}'
+      image_name: 'backstage-portfolio'
+    secrets: inherit
