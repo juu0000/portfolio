@@ -8,7 +8,6 @@
 
 import { createBackend } from '@backstage/backend-defaults';
 
-import { createBackendModule } from '@backstage/backend-plugin-api';
 
 const backend = createBackend();
 
